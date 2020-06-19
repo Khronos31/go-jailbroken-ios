@@ -1,0 +1,11 @@
+Package: com.khronos.go
+Priority: optional
+Name: Go
+Version: %%VERSION%%
+Section: Scripting
+Architecture: iphoneos-arm
+Pre-Depends: dpkg
+Maintainer: Khronos
+Homepage: https://golang.org/
+Tag: purpose::console
+Description: Core compiler tools for the Go programming language
