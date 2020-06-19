@@ -1,0 +1,25 @@
+--- go/src/cmd/link/internal/ld/main.go	2020-06-02 04:44:34.000000000 +0900
++++ patches/src/cmd/link/internal/ld/main.go	2020-06-02 04:44:34.000000000 +0900
+@@ -38,6 +38,7 @@
+ 	"flag"
+ 	"log"
+ 	"os"
++	"os/exec"
+ 	"runtime"
+ 	"runtime/pprof"
+ 	"strings"
+@@ -284,6 +285,14 @@
+ 		ctxt.Logf("%d liveness data\n", liveness)
+ 	}
+ 	ctxt.Bso.Flush()
++	switch ctxt.BuildMode {
++	case BuildModeExe, BuildModePIE, BuildModeCShared, BuildModePlugin:
++		if ctxt.HeadType == objabi.Hdarwin && ctxt.Arch.InFamily(sys.ARM, sys.ARM64) {
++			if out, err := exec.Command("ldid", "-S/usr/share/entitlements/com.khronos.go.xml", *flagOutfile).CombinedOutput(); err != nil {
++				Exitf("running ldid failed: %v\n%s", err, out)
++			}
++		}
++	}
+ 	ctxt.archive()
+ 
+ 	errorexit()
